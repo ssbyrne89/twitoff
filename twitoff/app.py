@@ -1,6 +1,6 @@
 """Main app/routing file for TwitOff."""
 from flask import Flask, render_template
-from .models import db, User
+from .models import DB, User
 from .twitter import insert_example_users
 from os import getenv
 
@@ -10,7 +10,7 @@ def create_app():
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = getenv('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    db.init_app(app)
+    DB.init_app(app)
 
     # ... TODO make the app!
     @app.route('/')
@@ -27,8 +27,12 @@ def create_app():
 
     @app.route('/reset')
     def reset():
-        db.drop_all()
-        db.create_all()
+        DB.drop_all()
+        DB.create_all()
         return render_template('base.html', title='Reset database!')
+
+    @app.route('/about')
+    def about():
+        return "<h1>About Page</h1>"
 
     return app

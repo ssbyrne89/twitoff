@@ -2,7 +2,7 @@
 from os import getenv
 import basilica
 import tweepy
-from .models import db, Tweet, User
+from .models import DB, Tweet, User
 
 
 TWITTER_USERS = ['calebhicks', 'elonmusk', 'rrherr', 'SteveMartinToGo',
@@ -23,37 +23,29 @@ def add_or_update_user(username):
         twitter_user = TWITTER.get_user(username)
         db_user = (User.query.get(twitter_user.id) or
                 User(id=twitter_user.id, name=username))
-        db.session.add(db_user)
+        DB.session.add(db_user)
         # Lets get the tweets - focusing on primary (not retweet/reply)
         tweets = twitter_user.timeline(
-            count=200, exclude_replies=True, include_rts=False,
-            tweet_mode='extended', since_id=db_user.newest_tweet_id
+            count=200, exclude_replies=True,
+            include_rts=False, tweet_mode='extended',
+            since_id=db_user.newest_tweet_id
         )
         if tweets:
             db_user.newest_tweet_id = tweets[0].id
         for tweet in tweets:
             embedding = BASILICA.embed_sentence(tweet.full_text,
                                                 model='twitter')
-            db_tweet = Tweet(id=tweet.id, text=tweet.full_text[:300], embedding=embedding)
+            db_tweet = Tweet(id=tweet.id, text=tweet.full_text[:300],
+                             embedding=embedding)
             db_user.tweets.append(db_tweet)
-            db.session.add(db_tweet)
-        db.session.commit()
+            DB.session.add(db_tweet)
     except Exception as e:
         print('Error processing {}: {}'.format(username, e))
         raise e
     else:
-        db.session.commit()
+        DB.session.commit()
 
 def insert_example_users():
     """Example data to play with."""
-    austen =User(id=1, name='austen')
-    elon = User(id=2, name='elonmusk')
-    db.session.add(austen)
-    db.session.add(elon)
-    db.session.commit()
-
-"""
-
-
-
-"""
+    add_or_update_user('austen')
+    add_or_update_user('elonmusk')
