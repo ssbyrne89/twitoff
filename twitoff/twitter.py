@@ -17,12 +17,13 @@ TWITTER_AUTH = tweepy.OAuthHandler(TWITTER_API_KEY, TWITTER_API_SECRET_KEY)
 TWITTER = tweepy.API(TWITTER_AUTH)
 BASILICA = basilica.Connection(getenv('BASILICA_KEY'))
 
+
 def add_or_update_user(username):
     """Add or update a user and their Tweets, error if not a Twitter user."""
     try:
         twitter_user = TWITTER.get_user(username)
         db_user = (User.query.get(twitter_user.id) or
-                User(id=twitter_user.id, name=username))
+                   User(id=twitter_user.id, name=username))
         DB.session.add(db_user)
         # Lets get the tweets - focusing on primary (not retweet/reply)
         tweets = twitter_user.timeline(
@@ -44,6 +45,7 @@ def add_or_update_user(username):
         raise e
     else:
         DB.session.commit()
+
 
 def insert_example_users():
     """Example data to play with."""
