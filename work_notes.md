@@ -25,7 +25,7 @@ get admin access and then make a branch
 CREATING THE DS MODEL:
 to work out the variables for the LogisticRegression model, it's handy to work it out in flask shell and even run the regression model in there too. from there you can transcribe into the code editor
 
-
+Using Heroku, it'll serve as the DB in the cloud and we'll just make work it with the local sqlite DB currently used. they just work via the packages
 
 WHAT I GOT IN THE CLI
 after trying the logistic regression
