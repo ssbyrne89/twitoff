@@ -10,4 +10,5 @@ press enter
 
 the CLI now becomes occupied and displays a live log of requests and responses
 
-
+to run on HEROKU:
+you need a Procfile in the directory for the web app to work and set the timeout to -t 120 
